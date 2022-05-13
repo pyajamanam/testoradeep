@@ -13,12 +13,23 @@ $(document).ready(function() {
             phoneNumber: {
                
                 required: true,
+		number:true,
                 minlength:10,
-				        maxlength:14,
-                 phoneUS: true,
+	        maxlength:14,
+                phoneUS: true,
                 
             }
         },
+ 	messages:{
+            phoneNumber: {
+                required: 'This field is required.',
+                number: '<h2>Numbers only in field.</h2>',
+                minlength:'minlength is 10',
+		maxlength:'max lenth is 14',
+		phoneUS:'Not a valid format'
+            }
+        },
+
         submitHandler: function(form) { // for demo
             alert('valid form');
            $.ajax({
@@ -46,7 +57,7 @@ $(document).ready(function() {
 <body>
 <form id="myform">  
      <input type="text" name="phoneNumber" /><br/> 
-     <input type="submit" />
+     <button type="submit" value="submit"/>submit</button>
 </form> 
 
 </body>
