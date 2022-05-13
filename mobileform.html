@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/additional-methods.js"></script>
+
+<script>
+$(document).ready(function() {
+    
+    $('#myform').validate({
+        rules: {
+            phoneNumber: {
+               
+                required: true,
+                minlength:10,
+				        maxlength:14,
+                 phoneUS: true,
+                
+            }
+        },
+        submitHandler: function(form) { // for demo
+            alert('valid form');
+           $.ajax({
+            url: "login/savemember", 
+            type: "POST",             
+            data: new FormData($(form)),
+            cache: false,             
+            processData: false,      
+            success: function(data) {
+                //show suscess model popup
+             }
+           });
+            return false;
+        }
+    });
+    
+  jQuery.validator.addMethod("phoneUS", function (phone_number, element) {
+            phone_number = phone_number.replace(/\s+/g, "");
+            return this.optional(element) ||
+                  phone_number.match(/\(?[\d\s]{3}\)-[\d\s]{3}-[\d\s]{4}$/);
+        }, "allowed (123)-123-1234 format");
+});
+</script>
+</head>
+<body>
+<form id="myform">  
+     <input type="text" name="phoneNumber" /><br/> 
+     <input type="submit" />
+</form> 
+
+</body>
+</html>
