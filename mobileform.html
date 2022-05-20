@@ -1,64 +1,110 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.min.js"></script>
-<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/additional-methods.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.min.js"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/additional-methods.js"></script>
+    <style type="text/css">
 
-<script>
-$(document).ready(function() {
-    
-    $('#myform').validate({
-        rules: {
-            phoneNumber: {
-               
-                required: true,
-		number:true,
-                minlength:10,
-	        maxlength:14,
-                phoneUS: true,
-                
-            }
-        },
- 	messages:{
-            phoneNumber: {
-                required: 'This field is required.',
-                number: '<h2>Numbers only in field.</h2>',
-                minlength:'minlength is 10',
-		maxlength:'max lenth is 14',
-		phoneUS:'Not a valid format'
-            }
-        },
 
-        submitHandler: function(form) { // for demo
-            alert('valid form');
-           $.ajax({
-            url: "login/savemember", 
-            type: "POST",             
-            data: new FormData($(form)),
-            cache: false,             
-            processData: false,      
-            success: function(data) {
-                //show suscess model popup
-             }
-           });
-            return false;
+        .otperror {
+            background-color:red;
         }
-    });
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function (event) {
+
+            function OTPInput() {
+                const inputs = document.querySelectorAll('#otp > *[id]');
+                for (let i = 0; i < inputs.length; i++) { inputs[i].addEventListener('keydown', function (event) { if (event.key === "Backspace") { inputs[i].value = ''; if (i !== 0) inputs[i - 1].focus(); } else { if (i === inputs.length - 1 && inputs[i].value !== '') { return true; } else if (event.keyCode > 47 && event.keyCode < 58) { inputs[i].value = event.key; if (i !== inputs.length - 1) inputs[i + 1].focus(); event.preventDefault(); } else if (event.keyCode > 64 && event.keyCode < 91) { inputs[i].value = String.fromCharCode(event.keyCode); if (i !== inputs.length - 1) inputs[i + 1].focus(); event.preventDefault(); } } }); }
+            } OTPInput();
+        });
+
+        $(document).ready(function () {
+
+            $('#myform').validate({
+                rules: {
+                    phoneNumber: {
+
+                      //required: true,
+                        //phoneUS: true,
+                        allfeilds: true
+
+                    }
+                },
+                
+                //invalidHandler: function (event, validator) {
+                //    // 'this' refers to the form
+                //    var errors = validator.numberOfInvalids();
+                //    if (errors) {
+                //        var message = errors == 1
+                //            ? 'You missed 1 field. It has been highlighted'
+                //            : 'You missed ' + errors + ' fields. They have been highlighted';
+                //        $("div.error span").html(message);
+                //        $("div.error").show();
+                //    } else {
+                //        $("div.error").hide();
+                //    }
+                //},
+
+                submitHandler: function (form) { // for demo
+                    alert('valid form');
+                    //$.ajax({
+                    //    url: "login/savemember",
+                    //    type: "POST",
+                    //    data: new FormData($(form)),
+                    //    cache: false,
+                    //    processData: false,
+                    //    success: function (data) {
+                    //        //show suscess model popup
+                    //    }
+                    //});
+                    return false;
+                }
+            });
+
+            jQuery.validator.addMethod("phoneUS", function (phone_number, element) {
+                debugger;
+                        phone_number = phone_number.replace(/\s+/g, "");
+                        return this.optional(element) ||
+                            phone_number.match(/^\d+$/);
+            }, "allowed number format");
+
+            jQuery.validator.addMethod("allfeilds", function (element) {
+
+                debugger;
+                return $("input").filter(function () {
+                    return $.trim($(this).val()).length == 0
+                }).length == 0;;
+            }, '');
+
+
+
+        });
+    </script>
     
-  jQuery.validator.addMethod("phoneUS", function (phone_number, element) {
-            phone_number = phone_number.replace(/\s+/g, "");
-            return this.optional(element) ||
-                  phone_number.match(/\(?[\d\s]{3}\)-[\d\s]{3}-[\d\s]{4}$/);
-        }, "allowed (123)-123-1234 format");
-});
-</script>
 </head>
 <body>
-<form id="myform">  
-     <input type="text" name="phoneNumber" /><br/> 
-     <button type="submit" value="submit"/>submit</button>
-</form> 
+    <div class="container height-100 d-flex justify-content-center align-items-center">
+        <div class="position-relative">
+            <div class="card p-2 text-center">
+                <form id="myform" method="post">
+                    <div id="otp" class="inputs d-flex flex-row justify-content-center mt-2">
+                        <input class="otp6 text-center form-control rounded" name="phoneNumber" onkeyup="document.getElementsByClassName('otp6')[0].focus()" type="text" id="sixth" maxlength="1" />
+                        <input class="otp1 text-center form-control rounded" name="phoneNumber" onkeyup="document.getElementsByClassName('otp1')[0].focus()" type="text" id="first" maxlength="1" />
+                        <input class="otp2 text-center form-control rounded" name="phoneNumber" onkeyup="document.getElementsByClassName('otp2')[0].focus()" type="text" id="second" maxlength="1" />
+                        <input class="otp3 text-center form-control rounded" name="phoneNumber" onkeyup="document.getElementsByClassName('otp3')[0].focus()" type="text" id="third" maxlength="1" />
+                        <input class="otp4 text-center form-control rounded" name="phoneNumber" onkeyup="document.getElementsByClassName('otp4')[0].focus()" type="text" id="fourth" maxlength="1" />
+                        <input class="otp5 text-center form-control rounded" name="phoneNumber" onkeyup="document.getElementsByClassName('otp5')[0].focus()" type="text" id="fifth" maxlength="1" />
+                    </div>
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-danger px-4 validate">Validate</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>
