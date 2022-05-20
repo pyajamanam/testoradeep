@@ -8,8 +8,9 @@
 
 
         .otperror {
-            background-color:red;
+            border-color:red;
         }
+        
     </style>
     <script>
         document.addEventListener("DOMContentLoaded", function (event) {
@@ -20,35 +21,45 @@
             } OTPInput();
         });
 
-        $(document).ready(function () {
+        function getMsg(selector) {
+            return $(selector).attr('data-msg');
+        }
 
+        $(document).ready(function () {
+            ignore:''.ignore;
             $('#myform').validate({
-                ignore: ".ignore",
+                //ignore: ".ignore",
+                errorClass: "otperror",
                 rules: {
                     phoneNumber: {
 
-                      //required: true,
-                        //phoneUS: true,
-                        number : true,
-                        allfeilds: true
-
+                        phoneUS: true,
+                        number:true,
+                        allfeilds: true,
                     }
                 },
-                //invalidHandler: function (event, validator) {
-                //    // 'this' refers to the form
-                //    var errors = validator.numberOfInvalids();
-                //    if (errors) {
-                //        var message = errors == 1
-                //            ? 'You missed 1 field. It has been highlighted'
-                //            : 'You missed ' + errors + ' fields. They have been highlighted';
-                //        $("div.error span").html(message);
-                //        $("div.error").show();
-                //    } else {
-                //        $("div.error").hide();
-                //    }
-                //},
+                highlight: function (element, errorClass) {
+                    if (element.value == '' || isNaN(element.value)) {
+                        debugger;
+                    $(element.form).find("input[id="+ element.id + "]")
+                            .addClass(errorClass);
+                    }
+                    
+                },
+                unhighlight: function (element, errorClass) {
+                        $(element.form).find("input[id=" + element.id + "]")
+                            .removeClass(errorClass);
+                },
                 showErrors: function (errorMap, errorList) {
-                    $(".form-errors").html("All fields must be completed before you submit the form.");
+                    $("#form-errors").html("Your form contains "
+                        + this.numberOfInvalids()
+                        + " errors, see details below.");
+                    this.defaultShowErrors();
+                },
+                success: function (label, element) {
+                    $(element.form).find("input[id=" + element.id + "]")
+                        .removeClass('otperror');
+                    // hide the tooltip
                 },
                 submitHandler: function (form) { // for demo
                     alert('valid form');
@@ -68,10 +79,15 @@
 
             jQuery.validator.addMethod("phoneUS", function (phone_number, element) {
                 debugger;
-                        phone_number = phone_number.replace(/\s+/g, "");
-                        return this.optional(element) ||
-                            phone_number.match(/^\d+$/);
-            }, "allowed number format");
+                phone_number = phone_number.replace(/\s+/g, "");
+                if (!phone_number.match(/^\d+$/) || element.value == '') {
+                    $(element).focus();
+                    element.value = '';
+                    $(element).addClass('otperror');
+                    return false;
+                }
+                return true;
+            }, "");
 
             jQuery.validator.addMethod("allfeilds", function (element) {
 
@@ -82,9 +98,9 @@
             }, '');
         });
 
-        jQuery.extend(jQuery.validator.messages, {
-            number: ""
-        });
+        //jQuery.extend(jQuery.validator.messages, {
+        //    number: "test"
+        //});
     </script>
     
 </head>
