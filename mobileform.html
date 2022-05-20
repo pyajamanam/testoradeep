@@ -23,6 +23,7 @@
         $(document).ready(function () {
 
             $('#myform').validate({
+                ignore: ".ignore",
                 rules: {
                     phoneNumber: {
 
@@ -33,7 +34,6 @@
 
                     }
                 },
-                
                 //invalidHandler: function (event, validator) {
                 //    // 'this' refers to the form
                 //    var errors = validator.numberOfInvalids();
@@ -47,7 +47,9 @@
                 //        $("div.error").hide();
                 //    }
                 //},
-
+                showErrors: function (errorMap, errorList) {
+                    $(".form-errors").html("All fields must be completed before you submit the form.");
+                },
                 submitHandler: function (form) { // for demo
                     alert('valid form');
                     //$.ajax({
@@ -78,9 +80,10 @@
                     return $.trim($(this).val()).length == 0
                 }).length == 0;;
             }, '');
+        });
 
-
-
+        jQuery.extend(jQuery.validator.messages, {
+            number: ""
         });
     </script>
     
@@ -91,18 +94,18 @@
             <div class="card p-2 text-center">
                 <form id="myform" method="post">
                     <div id="otp" class="inputs d-flex flex-row justify-content-center mt-2">
-                        <input class="otp6 text-center form-control rounded" name="phoneNumber" onkeyup="document.getElementsByClassName('otp6')[0].focus()" type="text" id="sixth" maxlength="1" />
                         <input class="otp1 text-center form-control rounded" name="phoneNumber" onkeyup="document.getElementsByClassName('otp1')[0].focus()" type="text" id="first" maxlength="1" />
                         <input class="otp2 text-center form-control rounded" name="phoneNumber" onkeyup="document.getElementsByClassName('otp2')[0].focus()" type="text" id="second" maxlength="1" />
                         <input class="otp3 text-center form-control rounded" name="phoneNumber" onkeyup="document.getElementsByClassName('otp3')[0].focus()" type="text" id="third" maxlength="1" />
                         <input class="otp4 text-center form-control rounded" name="phoneNumber" onkeyup="document.getElementsByClassName('otp4')[0].focus()" type="text" id="fourth" maxlength="1" />
                         <input class="otp5 text-center form-control rounded" name="phoneNumber" onkeyup="document.getElementsByClassName('otp5')[0].focus()" type="text" id="fifth" maxlength="1" />
+                        <input class="otp6 text-center form-control rounded" name="phoneNumber" onkeyup="document.getElementsByClassName('otp6')[0].focus()" type="text" id="sixth" maxlength="1" />
                     </div>
                     <div class="mt-4">
                         <button type="submit" class="btn btn-danger px-4 validate">Validate</button>
                     </div>
                 </form>
-
+                <div class="form-errors"></div>
             </div>
         </div>
     </div>
